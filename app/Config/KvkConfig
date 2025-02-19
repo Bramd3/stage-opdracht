@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Config;
+
+use CodeIgniter\Config\BaseConfig;
+
+class KvkConfig extends BaseConfig
+{
+    public $apiKey = 'JOUW_API_SLEUTEL_HIER';
+    public $apiUrl = 'https://api.kvk.nl/test/api/v2/zoeken';
+}

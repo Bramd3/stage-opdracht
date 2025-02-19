@@ -1,44 +1,67 @@
 document.getElementById("searchButton").addEventListener("click", function() {
-    const query = document.getElementById("searchInput").value;
-    
+    const query = document.getElementById("searchInput").value.trim();
+
     if (!query) {
         alert("Vul een bedrijfsnaam of KVK-nummer in!");
         return;
     }
 
-    fetch(`http://localhost/api/search?query=${query}`)
-        .then(response => response.json())
+    // API request uitvoeren
+    fetch(`/api/search?query=${encodeURIComponent(query)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Fout bij ophalen: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             displayResults(data);
         })
-        .catch(error => console.error("Error:", error));
+        .catch(error => {
+            console.error("Error:", error);
+            document.getElementById("results").innerHTML = `<p class="text-danger">Er is een fout opgetreden. Probeer het later opnieuw.</p>`;
+        });
 });
 
 function displayResults(data) {
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
 
-    if (data.length === 0) {
-        resultsDiv.innerHTML = "<p>Geen resultaten gevonden.</p>";
+    if (!data || !data.items || data.items.length === 0) {
+        resultsDiv.innerHTML = "<p class='text-warning'>Geen resultaten gevonden.</p>";
         return;
     }
 
-    data.forEach(company => {
-        const companyDiv = document.createElement("div");
-        companyDiv.innerHTML = `
-            <h3>${company.bedrijfsnaam} (${company.kvknummer})</h3>
-            <p>Adres: ${company.adres}</p>
-            <button onclick="getDetails('${company.kvknummer}')">Meer info</button>
+    let list = "<ul class='list-group'>";
+    data.items.forEach(company => {
+        list += `
+            <li class="list-group-item">
+                <strong>${company.handelsnaam}</strong> (KVK: ${company.kvkNummer})
+                <button class="btn btn-sm btn-info float-end" onclick="getDetails('${company.kvkNummer}')">Meer info</button>
+            </li>
         `;
-        resultsDiv.appendChild(companyDiv);
     });
+    list += "</ul>";
+    resultsDiv.innerHTML = list;
 }
 
-function getDetails(kvknummer) {
-    fetch(`http://localhost/api/company/${kvknummer}`)
-        .then(response => response.json())
-        .then(data => {
-            alert(`Bedrijfsnaam: ${data.bedrijfsnaam}\nAdres: ${data.adres}\nActiviteiten: ${data.activiteiten}`);
+function getDetails(kvkNummer) {
+    fetch(`/api/company/${kvkNummer}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Fout bij ophalen: ${response.status}`);
+            }
+            return response.json();
         })
-        .catch(error => console.error("Error:", error));
+        .then(data => {
+            if (!data.bedrijfsnaam) {
+                alert("Geen details beschikbaar voor dit bedrijf.");
+                return;
+            }
+            alert(`Bedrijfsnaam: ${data.bedrijfsnaam}\nAdres: ${data.adres}`);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Er is een fout opgetreden bij het ophalen van bedrijfsgegevens.");
+        });
 }
