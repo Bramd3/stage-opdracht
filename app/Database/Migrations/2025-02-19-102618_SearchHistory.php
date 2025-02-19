@@ -19,15 +19,14 @@ class CreateSearchHistoryTable extends Migration
                 'type'       => 'INT',
                 'constraint' => 11,
                 'unsigned'   => true,
-                'null'       => true, // Optioneel als gebruikers niet altijd ingelogd zijn
             ],
             'kvk_number' => [
                 'type'       => 'VARCHAR',
-                'constraint' => 20,
+                'constraint' => '20',
             ],
             'company_name' => [
                 'type'       => 'VARCHAR',
-                'constraint' => 200, // 200 tekens is meestal voldoende
+                'constraint' => '255',
             ],
             'address' => [
                 'type' => 'TEXT',
@@ -35,18 +34,21 @@ class CreateSearchHistoryTable extends Migration
             'search_date' => [
                 'type'    => 'TIMESTAMP',
                 'null'    => false,
-                'default' => null,
             ],
-
         ]);
-
-        $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addKey('id', true); // Primaire sleutel
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE'); // Foreign key naar users tabel
         $this->forge->createTable('search_history');
+
+        // Trigger toevoegen voor automatische tijdstempel
+        $db = \Config\Database::connect();
+        $db->query("CREATE TRIGGER set_search_date BEFORE INSERT ON search_history FOR EACH ROW SET NEW.search_date = IFNULL(NEW.search_date, CURRENT_TIMESTAMP);");
     }
 
     public function down()
     {
+        $db = \Config\Database::connect();
+        $db->query("DROP TRIGGER IF EXISTS set_search_date");  // Verwijder de trigger als de tabel wordt verwijderd
         $this->forge->dropTable('search_history');
     }
 }
