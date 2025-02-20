@@ -1,32 +1,63 @@
+/* Custom styling voor luxe uitstraling */
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 20px;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #e0f7fa, #80deea);
 }
-.container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
+
+.card {
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-input {
-    width: 80%;
-    padding: 10px;
-    margin: 10px 0;
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
+
 button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
     cursor: pointer;
 }
+
 button:hover {
-    background-color: #0056b3;
+    transform: translateY(-2px);
 }
-#results {
-    margin-top: 20px;
-    text-align: left;
+
+h1 {
+    color: #1e3a8a;
+}
+
+h3 {
+    color: #4a5568;
+}
+
+input, button {
+    transition: all 0.3s ease;
+}
+
+/* Extra padding en grotere knoppen */
+input[type="text"] {
+    padding: 1rem;
+    font-size: 1.125rem;
+    border-radius: 0.5rem;
+}
+
+button {
+    background-color: #3182ce;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2b6cb0;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.6);
 }

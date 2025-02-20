@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
@@ -18,7 +19,7 @@ class KvkController extends Controller
         }
 
         $url = "https://api.kvk.nl/test/api/v1/basisprofielen/" . urlencode($searchQuery);
-        $apiKey = "l7xx1f2691f2520d487b902f4e0b57a0b197";
+        $apiKey = getenv('KVK_API_KEY'); // Gebruik een veilige .env variabele
 
         try {
             $client = \Config\Services::curlrequest();
@@ -30,7 +31,7 @@ class KvkController extends Controller
             ]);
 
             if ($response->getStatusCode() !== 200) {
-                return view('home', ['error' => 'API-verzoek mislukt. Statuscode: ' . $response->getStatusCode()]);
+                return view('home', ['error' => 'De KVK API is tijdelijk niet beschikbaar. Probeer het later opnieuw.']);
             }
 
             $data = json_decode($response->getBody(), true);
@@ -48,11 +49,45 @@ class KvkController extends Controller
                 'business_activity'=> $data['sbiActiviteiten'][0]['sbiOmschrijving'] ?? null,
             ]);
 
-            // Resultaat tonen op het scherm
             return view('home', ['results' => [$data]]);
         } catch (\Exception $e) {
             log_message('error', 'API Error: ' . $e->getMessage());
-            return view('home', ['error' => 'Er is een fout opgetreden: ' . $e->getMessage()]);
+            return view('home', ['error' => 'Er is een probleem opgetreden met de API. Probeer het later opnieuw.']);
         }
     }
+
+    public function show($kvkNummer)
+    {
+        $url = "https://api.kvk.nl/test/api/v1/basisprofielen/" . urlencode($kvkNummer);
+        $apiKey = getenv('KVK_API_KEY');
+
+        try {
+            $client = \Config\Services::curlrequest();
+            $response = $client->request('GET', $url, [
+                'headers' => [
+                    'apikey' => $apiKey,
+                    'X-Requested-With' => 'XMLHttpRequest'
+                ]
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                return view('company_detail', ['error' => 'Bedrijfsinformatie kon niet worden opgehaald.']);
+            }
+
+            $data = json_decode($response->getBody(), true);
+
+            // Haal adresgegevens op, controleer of ze beschikbaar zijn
+            $hoofdvestiging = $data['_embedded']['hoofdvestiging'] ?? null;
+            $adres = $hoofdvestiging ? ($hoofdvestiging['straatnaam'] ?? 'Onbekend') . ' ' . 
+                                    ($hoofdvestiging['huisnummer'] ?? '') . ', ' .
+                                    ($hoofdvestiging['postcode'] ?? 'Onbekend') . ' ' .
+                                    ($hoofdvestiging['plaats'] ?? 'Onbekend') : 'Adres niet beschikbaar';
+
+            return view('company_detail', ['company' => $data, 'adres' => $adres]);
+        } catch (\Exception $e) {
+            log_message('error', 'API Error: ' . $e->getMessage());
+            return view('company_detail', ['error' => 'Er is een fout opgetreden bij het ophalen van de gegevens.']);
+        }
+    }
+
 }
