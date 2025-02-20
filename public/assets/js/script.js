@@ -1,39 +1,33 @@
-document.getElementById("searchButton").addEventListener("click", function () {
-  const query = document.getElementById("searchInput").value;
+document.getElementById("searchButton").addEventListener("click", function() {
+    let query = document.getElementById("searchInput").value.trim();
+    if (query === "") {
+        alert("Voer een naam of KVK-nummer in.");
+        return;
+    }
 
-  if (!query) {
-    alert("Vul een bedrijfsnaam of KVK-nummer in!");
-    return;
-  }
+    fetch(`http://localhost:8080/kvk/fetchData?q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("API Response:", data);
+
+            let resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = "";
+
+            if (data.status === "success" && data.results.length > 0) {
+                data.results.forEach(item => {
+                    resultsDiv.innerHTML += `
+                        <div class="card mt-2 p-3">
+                            <h5>${item.naam || "Geen naam beschikbaar"}</h5>
+                            <p><strong>KVK-nummer:</strong> ${item.kvkNummer || "Onbekend"}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                resultsDiv.innerHTML = `<p class="text-danger">Geen resultaten gevonden.</p>`;
+            }
+        })
+        .catch(error => {
+            console.error("Fout bij het ophalen van gegevens:", error);
+            document.getElementById("results").innerHTML = `<p class="text-danger">Er is een fout opgetreden.</p>`;
+        });
 });
-
-function displayResults(data) {
-  const resultsDiv = document.getElementById("results");
-  resultsDiv.innerHTML = "";
-
-  if (data.length === 0) {
-    resultsDiv.innerHTML = "<p>Geen resultaten gevonden.</p>";
-    return;
-  }
-
-  data.forEach((company) => {
-    const companyDiv = document.createElement("div");
-    companyDiv.innerHTML = `
-            <h3>${company.bedrijfsnaam} (${company.kvknummer})</h3>
-            <p>Adres: ${company.adres}</p>
-            <button onclick="getDetails('${company.kvknummer}')">Meer info</button>
-        `;
-    resultsDiv.appendChild(companyDiv);
-  });
-}
-
-function getDetails(kvknummer) {
-  fetch(`http://localhost/api/company/${kvknummer}`)
-    .then((response) => response.json())
-    .then((data) => {
-      alert(
-        `Bedrijfsnaam: ${data.bedrijfsnaam}\nAdres: ${data.adres}\nActiviteiten: ${data.activiteiten}`
-      );
-    })
-    .catch((error) => console.error("Error:", error));
-}

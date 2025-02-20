@@ -7,5 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 $routes->get('/fetch-kvk', 'KvkController::fetchData');
+$routes->get('kvk/fetchData', 'KvkController::fetchData');
+$routes->get('kvk', 'KvkController::index');
 
 

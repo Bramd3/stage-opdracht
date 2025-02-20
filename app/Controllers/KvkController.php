@@ -2,57 +2,60 @@
 
 namespace App\Controllers;
 
-use App\Models\KvkModel;
+use CodeIgniter\Controller;
 use CodeIgniter\API\ResponseTrait;
+use App\Models\KvkModel;
 
-class KvkController extends BaseController
+class KvkController extends Controller
 {
     use ResponseTrait;
 
-    public function fetchData()
+    public function index()
     {
-        $request = service('request');
-        $searchQuery = $request->getGet('q'); // Zoeken op naam of KVK-nummer
+        // Ophalen van zoekterm via GET (bijvoorbeeld ?q=69599084)
+        $searchQuery = $this->request->getGet('q');
 
-        if (!$searchQuery) {
-            return $this->fail("Voer een naam of KVK-nummer in als zoekopdracht.", 400);
+        if (!$searchQuery || !is_numeric($searchQuery)) {
+            return view('home', ['error' => 'Voer een geldig KVK-nummer in.']);
         }
 
-        $url = "https://api.kvk.nl/test/api/v2/zoeken?naam={$searchQuery}";
+        // API URL en sleutel
+        $url = "https://api.kvk.nl/test/api/v1/basisprofielen/{$searchQuery}";
         $apiKey = "l7xx1f2691f2520d487b902f4e0b57a0b197";
 
-        $client = \Config\Services::curlrequest();
-        $response = $client->request('GET', $url, [
-            'headers' => [
-                'apikey' => $apiKey,
-                'X-Requested-With' => 'XMLHttpRequest'
-            ]
-        ]);
-
-        if ($response->getStatusCode() !== 200) {
-            return $this->fail("API-verzoek mislukt", $response->getStatusCode());
-        }
-
-        $data = json_decode($response->getBody(), true);
-        if (!isset($data['resultaten']) || empty($data['resultaten'])) {
-            return $this->failNotFound("Geen resultaten gevonden voor: $searchQuery");
-        }
-
-        $kvkModel = new KvkModel();
-
-        foreach ($data['resultaten'] as $item) {
-            $kvkModel->insert([
-                'kvk_number' => $item['kvkNummer'] ?? null,
-                'branch_number' => $item['vestigingsnummer'] ?? null,
-                'trade_name' => $item['naam'] ?? null,
-                'business_activity' => isset($item['sbiActiviteiten']) ? json_encode($item['sbiActiviteiten']) : null
+        try {
+            $client = \Config\Services::curlrequest();
+            $response = $client->request('GET', $url, [
+                'headers' => [
+                    'apikey' => $apiKey,
+                    'X-Requested-With' => 'XMLHttpRequest'
+                ]
             ]);
-        }
 
-        return $this->respond([
-            'message' => "Data opgehaald en opgeslagen voor: $searchQuery",
-            'results' => $data['resultaten']
-        ]);
+            // Controleer of de API een succesvolle respons geeft
+            if ($response->getStatusCode() !== 200) {
+                return view('home', ['error' => 'API-verzoek mislukt. Statuscode: ' . $response->getStatusCode()]);
+            }
+
+            // Decodeer de JSON-respons
+            $data = json_decode($response->getBody(), true);
+
+            // Controleer of de API een foutmelding geeft
+            if (isset($data['fout'])) {
+                return view('home', ['error' => "API-fout: " . $data['fout'][0]['omschrijving']]);
+            }
+
+            // Als er geen resultaat is gevonden
+            if (!isset($data['kvkNummer'])) {
+                return view('home', ['error' => "Geen resultaten gevonden voor KVK-nummer: $searchQuery"]);
+            }
+
+            // Stuur de resultaten naar de view
+            return view('home', ['result' => $data]);
+
+        } catch (\Exception $e) {
+            log_message('error', 'API Error: ' . $e->getMessage());
+            return view('home', ['error' => 'Er is een fout opgetreden: ' . $e->getMessage()]);
+        }
     }
 }
- 
