@@ -6,35 +6,38 @@
     <title>KVK Zoeken</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-
-    <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-lg">
-        <h1 class="text-2xl font-bold text-gray-700 mb-4 text-center">Zoek een KVK-bedrijf</h1>
+<body class="bg-gray-100 text-gray-900">
+    <div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow">
+        <h1 class="text-2xl font-bold mb-4">Zoeken naar KVK Bedrijven</h1>
 
         <!-- Zoekformulier -->
         <form method="get" action="<?= site_url('kvk') ?>" class="mb-4 flex">
-            <input type="text" name="q" class="border border-gray-300 p-2 rounded-l w-full focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Voer KVK-nummer in" required>
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600">Zoek</button>
+            <input type="text" name="q" placeholder="Voer KVK-nummer of naam in" required 
+                class="border border-gray-300 p-2 flex-1 rounded-l">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r">
+                Zoek
+            </button>
         </form>
 
-        <!-- Foutmelding weergeven -->
+        <!-- Foutmelding -->
         <?php if (isset($error)): ?>
-            <div class="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-center">
-                <?= $error; ?>
-            </div>
+            <p class="text-red-500"><?= $error; ?></p>
         <?php endif; ?>
 
-        <!-- Resultaten weergeven -->
-        <?php if (isset($result)): ?>
-            <div class="bg-green-100 p-4 rounded-md">
-                <h3 class="text-lg font-semibold text-gray-700">Bedrijfsgegevens</h3>
-                <p><strong>Naam:</strong> <?= $result['naam']; ?></p>
-                <p><strong>KVK-nummer:</strong> <?= $result['kvkNummer']; ?></p>
-                <p><strong>Registratiedatum:</strong> <?= $result['formeleRegistratiedatum']; ?></p>
-                <p><strong>Vestigingsadres:</strong> <?= $result['_embedded']['hoofdvestiging']['adressen'][0]['volledigAdres'] ?? 'Niet beschikbaar'; ?></p>
-            </div>
+        <!-- Zoekresultaten weergeven -->
+        <?php if (isset($results) && count($results) > 0): ?>
+            <h3 class="text-xl font-semibold mt-4">Zoekresultaten:</h3>
+            <ul class="mt-2">
+                <?php foreach ($results as $result): ?>
+                    <li class="bg-gray-200 p-3 mt-2 rounded">
+                        <strong><?= esc($result['naam'] ?? 'Onbekende Naam'); ?></strong><br>
+                        KVK Nummer: <?= esc($result['kvkNummer']); ?><br>
+                        Vestigingsnummer: <?= esc($result['_embedded']['hoofdvestiging']['vestigingsnummer'] ?? 'N/A'); ?><br>
+                        Activiteit: <?= esc($result['sbiActiviteiten'][0]['sbiOmschrijving'] ?? 'Geen info'); ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
         <?php endif; ?>
     </div>
-
 </body>
 </html>

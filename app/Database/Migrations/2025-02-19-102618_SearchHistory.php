@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateSearchHistoryTable extends Migration
+class UpdateSearchHistory extends Migration
 {
     public function up()
     {
@@ -13,42 +13,42 @@ class CreateSearchHistoryTable extends Migration
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
-                'auto_increment' => true,
-            ],
-            'user_id' => [
-                'type'       => 'INT',
-                'constraint' => 11,
-                'unsigned'   => true,
+                'auto_increment' => true
             ],
             'kvk_number' => [
                 'type'       => 'VARCHAR',
-                'constraint' => '20',
+                'constraint' => 20,
             ],
-            'company_name' => [
+            'branch_number' => [
                 'type'       => 'VARCHAR',
-                'constraint' => '255',
+                'constraint' => 20,
+                'null'       => true,
             ],
-            'address' => [
-                'type' => 'TEXT',
+            'trade_name' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+                'null'       => true,
             ],
-            'search_date' => [
-                'type'    => 'TIMESTAMP',
-                'null'    => false,
+            'business_activity' => [
+                'type'       => 'TEXT',
+                'null'       => true,
             ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true
+            ]
         ]);
-        $this->forge->addKey('id', true); // Primaire sleutel
-        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE'); // Foreign key naar users tabel
-        $this->forge->createTable('search_history');
 
-        // Trigger toevoegen voor automatische tijdstempel
-        $db = \Config\Database::connect();
-        $db->query("CREATE TRIGGER set_search_date BEFORE INSERT ON search_history FOR EACH ROW SET NEW.search_date = IFNULL(NEW.search_date, CURRENT_TIMESTAMP);");
+        $this->forge->addKey('id', true);
+        $this->forge->createTable('search_history', true);
     }
 
     public function down()
     {
-        $db = \Config\Database::connect();
-        $db->query("DROP TRIGGER IF EXISTS set_search_date");  // Verwijder de trigger als de tabel wordt verwijderd
-        $this->forge->dropTable('search_history');
+        $this->forge->dropTable('search_history', true);
     }
 }
