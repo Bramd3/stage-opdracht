@@ -12,17 +12,17 @@ class KvkController extends Controller
 
     public function index()
     {
-        $searchQuery = $this->request->getGet('q');
+        $searchQuery = $this->request->getGet('q'); // Haal zoekopdracht op uit de GET-request
 
         if (!$searchQuery) {
             return view('home', ['error' => 'Voer een KVK-nummer in als zoekopdracht.']);
         }
 
         $url = "https://api.kvk.nl/test/api/v1/basisprofielen/" . urlencode($searchQuery);
-        $apiKey = getenv('KVK_API_KEY'); // Gebruik een veilige .env variabele
+        $apiKey = getenv('KVK_API_KEY'); // Haal API-key veilig op uit .env
 
         try {
-            $client = \Config\Services::curlrequest();
+            $client = \Config\Services::curlrequest(); // CodeIgniter cURL service
             $response = $client->request('GET', $url, [
                 'headers' => [
                     'apikey' => $apiKey,
@@ -34,7 +34,7 @@ class KvkController extends Controller
                 return view('home', ['error' => 'De KVK API is tijdelijk niet beschikbaar. Probeer het later opnieuw.']);
             }
 
-            $data = json_decode($response->getBody(), true);
+            $data = json_decode($response->getBody(), true); // Decode JSON-response
 
             if (!isset($data['kvkNummer'])) {
                 return view('home', ['error' => "Geen resultaten gevonden voor: $searchQuery"]);
@@ -51,7 +51,7 @@ class KvkController extends Controller
 
             return view('home', ['results' => [$data]]);
         } catch (\Exception $e) {
-            log_message('error', 'API Error: ' . $e->getMessage());
+            log_message('error', 'API Error: ' . $e->getMessage()); // Log eventuele fouten
             return view('home', ['error' => 'Er is een probleem opgetreden met de API. Probeer het later opnieuw.']);
         }
     }

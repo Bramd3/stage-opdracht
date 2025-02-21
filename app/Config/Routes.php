@@ -5,10 +5,18 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+
+// Homepage route
 $routes->get('/', 'Home::index');
+
+// API-route om KVK-gegevens op te halen
 $routes->get('/fetch-kvk', 'KvkController::fetchData');
+
+// Alternatieve route voor KVK-data ophalen
 $routes->get('kvk/fetchData', 'KvkController::fetchData');
+
+// Hoofdpagina voor KVK-zoekopdrachten
 $routes->get('kvk', 'KvkController::index');
+
+// Route voor bedrijfsdetails op basis van KVK-nummer
 $routes->get('company/(:num)', 'KvkController::show/$1');
-
-

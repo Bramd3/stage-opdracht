@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bedrijfsdetails</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script> <!-- TailwindCSS via CDN -->
 </head>
 <body class="bg-gradient-to-br from-white to-blue-50 min-h-screen flex items-center justify-center">
 
     <div class="max-w-3xl w-full p-10 bg-white bg-opacity-80 backdrop-blur-xl shadow-2xl rounded-3xl border border-gray-300">
         <h1 class="text-4xl font-extrabold text-center text-blue-900 mb-6">📊 Bedrijfsdetails</h1>
 
-        <?php if (isset($error)): ?>
+        <?php if (isset($error)): ?> 
+            <!-- Foutmelding weergeven als er een error is -->
             <div class="text-red-500 text-center text-lg mb-6"><?= esc($error); ?></div>
         <?php else: ?>
             <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200">

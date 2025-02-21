@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KVK Zoeken</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script> <!-- TailwindCSS via CDN -->
 </head>
 <body class="bg-gradient-to-br from-white to-blue-50 min-h-screen flex items-center justify-center">
 
@@ -20,12 +20,12 @@
             </button>
         </form>
 
-        <!-- Foutmelding -->
+        <!-- Foutmelding weergeven indien aanwezig -->
         <?php if (isset($error)): ?>
             <div class="text-red-500 text-center text-lg mb-6"><?= esc($error); ?></div>
         <?php endif; ?>
 
-        <!-- Zoekresultaten -->
+        <!-- Zoekresultaten weergeven indien beschikbaar -->
         <?php if (isset($results) && count($results) > 0): ?>
             <h3 class="text-2xl font-semibold text-center text-blue-800 mb-4">🏆 Zoekresultaten:</h3>
             <div class="space-y-6">
