@@ -20,3 +20,8 @@ $routes->get('kvk', 'KvkController::index');
 
 // Route voor bedrijfsdetails op basis van KVK-nummer
 $routes->get('company/(:num)', 'KvkController::show/$1');
+
+$routes->get('/login', 'AuthController::login');
+$routes->post('/loginProcess', 'AuthController::loginProcess');
+$routes->get('/logout', 'AuthController::logout');
+$routes->get('/dashboard', 'DashboardController::index', ['filter' => 'authGuard']);
