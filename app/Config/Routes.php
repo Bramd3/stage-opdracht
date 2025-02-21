@@ -24,4 +24,5 @@ $routes->get('company/(:num)', 'KvkController::show/$1');
 $routes->get('/login', 'AuthController::login');
 $routes->post('/loginProcess', 'AuthController::loginProcess');
 $routes->get('/logout', 'AuthController::logout');
-$routes->get('/dashboard', 'DashboardController::index', ['filter' => 'authGuard']);
+$routes->get('/register', 'AuthController::register');
+$routes->post('/registerProcess', 'AuthController::registerProcess');
