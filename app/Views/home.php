@@ -7,11 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script> <!-- TailwindCSS via CDN -->
 </head>
 <body class="bg-gradient-to-br from-white to-blue-50 min-h-screen flex items-center justify-center">
+<!-- Formulier voor uitloggen -->
 <form method="get" action="<?= site_url('logout') ?>">
     <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
         Uitloggen 🔒
     </button>
 </form>
+
+    <!-- Hoofdcontainer voor de zoekfunctionaliteit -->
     <div class="max-w-3xl w-full p-10 bg-white bg-opacity-80 backdrop-blur-xl shadow-2xl rounded-3xl border border-gray-300">
         <h1 class="text-5xl font-extrabold text-center text-blue-900 mb-8">🔎 KVK Bedrijvengids</h1>
 
@@ -40,6 +43,7 @@
                         <p class="text-gray-700 text-lg"><strong>🏢 Vestigingsnummer:</strong> <?= esc($result['_embedded']['hoofdvestiging']['vestigingsnummer'] ?? 'N/A'); ?></p>
                         <p class="text-gray-700 text-lg"><strong>💼 Activiteit:</strong> <?= esc($result['sbiActiviteiten'][0]['sbiOmschrijving'] ?? 'Geen informatie beschikbaar'); ?></p>
                         <div class="mt-4 text-right">
+                            <!-- Link naar meer informatie over het bedrijf -->
                             <a href="<?= site_url('company/' . esc($result['kvkNummer'])) ?>" 
                                 class="bg-blue-900 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-800 transition duration-300 shadow-md">
                                 ℹ️ Meer Informatie
