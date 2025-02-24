@@ -9,7 +9,18 @@ class AuthController extends Controller
 {
     public function login()
     {
-        return view('auth/login'); // Laadt de login view
+        if (session()->get('logged_in')) {
+            return redirect()->to('/'); // Stuur naar home als al ingelogd
+        }
+        return view('auth/login');
+    }
+    
+    public function register()
+    {
+        if (session()->get('logged_in')) {
+            return redirect()->to('/');
+        }
+        return view('auth/register');
     }
 
     public function loginProcess()
@@ -34,15 +45,6 @@ class AuthController extends Controller
     }
 }
 
-    public function logout()
-    {
-        session()->destroy();
-        return redirect()->to('/login');
-    }
-    public function register()
-{
-    return view('auth/register');
-}
 
 public function registerProcess()
 {
@@ -69,5 +71,9 @@ public function registerProcess()
 
     return redirect()->to('/login')->with('success', 'Registratie gelukt! Log nu in.');
 }
-
+public function logout()
+{
+    session()->destroy();
+    return redirect()->to('/login');
+}
 }

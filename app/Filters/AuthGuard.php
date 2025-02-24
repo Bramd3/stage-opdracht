@@ -10,13 +10,16 @@ class AuthGuard implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (!session()->get('logged_in')) {
+        $allowedRoutes = ['login', 'register', 'loginProcess', 'registerProcess']; 
+        $currentRoute = service('router')->getMatchedRoute()[0] ?? service('uri')->getPath();
+
+        if (!session()->get('logged_in') && !in_array($currentRoute, $allowedRoutes)) {
             return redirect()->to('/login');
         }
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // Laat de response ongewijzigd
+        // Do nothing after response
     }
 }

@@ -7,7 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script> <!-- TailwindCSS via CDN -->
 </head>
 <body class="bg-gradient-to-br from-white to-blue-50 min-h-screen flex items-center justify-center">
-
+<form method="get" action="<?= site_url('logout') ?>">
+    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
+        Uitloggen 🔒
+    </button>
+</form>
     <div class="max-w-3xl w-full p-10 bg-white bg-opacity-80 backdrop-blur-xl shadow-2xl rounded-3xl border border-gray-300">
         <h1 class="text-5xl font-extrabold text-center text-blue-900 mb-8">🔎 KVK Bedrijvengids</h1>
 

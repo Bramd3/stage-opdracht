@@ -7,7 +7,9 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // Homepage route
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Home::index', ['filter' => 'auth']);
+
+
 
 // API-route om KVK-gegevens op te halen
 $routes->get('/fetch-kvk', 'KvkController::fetchData');
@@ -23,6 +25,7 @@ $routes->get('company/(:num)', 'KvkController::show/$1');
 
 $routes->get('/login', 'AuthController::login');
 $routes->post('/loginProcess', 'AuthController::loginProcess');
-$routes->get('/logout', 'AuthController::logout');
 $routes->get('/register', 'AuthController::register');
 $routes->post('/registerProcess', 'AuthController::registerProcess');
+$routes->get('/logout', 'AuthController::logout', ['filter' => 'auth']);
+$routes->get('/dashboard', 'Dashboard::index', ['filter' => 'auth']);
