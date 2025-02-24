@@ -32,3 +32,5 @@ $routes->post('/registerProcess', 'AuthController::registerProcess'); // Verwerk
 // Logout route, alleen toegankelijk voor ingelogde gebruikers
 $routes->get('/logout', 'AuthController::logout', ['filter' => 'auth']); // Log de gebruiker uit en stuur naar loginpagina
 
+// Dashboard route, alleen toegankelijk voor ingelogde gebruikers
+$routes->get('/dashboard', 'Dashboard::index', ['filter' => 'auth']); // Toon het dashboard
