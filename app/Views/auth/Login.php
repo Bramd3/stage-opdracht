@@ -24,6 +24,11 @@
                 class="w-full p-3 mb-4 border rounded-lg">
             <button type="submit" class="w-full bg-blue-900 text-white p-3 rounded-lg">Login</button>
         </form>
+
+        <!-- Link naar registratiepagina -->
+        <p class="text-center mt-4 text-gray-600">
+            Nog geen account? <a href="<?= site_url('register') ?>" class="text-blue-900 font-bold">Registreer hier</a>
+        </p>
     </div>
 </body>
 </html>

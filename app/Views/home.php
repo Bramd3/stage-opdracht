@@ -6,16 +6,19 @@
     <title>KVK Zoeken</title>
     <script src="https://cdn.tailwindcss.com"></script> <!-- TailwindCSS via CDN -->
 </head>
-<body class="bg-gradient-to-br from-white to-blue-50 min-h-screen flex items-center justify-center">
-<!-- Formulier voor uitloggen -->
-<form method="get" action="<?= site_url('logout') ?>">
-    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
-        Uitloggen 🔒
-    </button>
-</form>
+<body class="bg-gradient-to-br from-white to-blue-50 min-h-screen flex flex-col items-center">
+
+    <!-- Navigatiebalk met uitlogknop -->
+    <nav class="w-full bg-white shadow-md p-4 flex justify-end">
+        <form method="get" action="<?= site_url('logout') ?>">
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
+                Uitloggen 🔒
+            </button>
+        </form>
+    </nav>
 
     <!-- Hoofdcontainer voor de zoekfunctionaliteit -->
-    <div class="max-w-3xl w-full p-10 bg-white bg-opacity-80 backdrop-blur-xl shadow-2xl rounded-3xl border border-gray-300">
+    <div class="max-w-3xl w-full p-10 bg-white bg-opacity-80 backdrop-blur-xl shadow-2xl rounded-3xl border border-gray-300 mt-10">
         <h1 class="text-5xl font-extrabold text-center text-blue-900 mb-8">🔎 KVK Bedrijvengids</h1>
 
         <!-- Zoekformulier -->
